@@ -2,12 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { Ollama } = require('ollama');
+const aiRoutes = require('./routes/aiRoutes');
 
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 5000;
-const ollama = new Ollama({ host: 'http://localhost:11434' });
+
 
 app.use(cors());
 app.use(express.json());
@@ -19,10 +18,9 @@ mongoose.connect(mongoURI)
   .then(() => console.log('Connected to db'))
   .catch(err => console.error('Db connection_error:', err));
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'backend working' });
-});
+app.use('/api', aiRoutes);
 
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server : http://localhost:${port}`);
 });
